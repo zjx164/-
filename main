@@ -1,0 +1,54 @@
+import csv
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+# C:/Users/联想/Desktop/train_set.csv
+train_df = pd.read_csv('./input/train.csv', sep='\t')
+train_df = np.transpose(train_df.values)
+# print(train_df)
+test_df = pd.read_csv('./input/test.csv', sep='\t')
+test_df = np.transpose(test_df.values)
+# print(test_df)
+# # 变量vect接收特征向量化方法
+# vect = CountVectorizer(max_features=3000)
+# words = vect.fit_transform(train_df[1])
+# test_df = vect.transform(test_df[0])
+
+# Tf_IDF特征向量化方法
+tfidf = TfidfVectorizer(max_features=3000)
+words = tfidf.fit_transform(train_df[1])
+test_df = tfidf.transform(test_df[0])
+
+# 将sparse矩阵转换成正常的数组形式
+X_train = words.toarray()
+# 对测试集进行向量化
+
+tests = test_df.toarray()
+# 将训练集标签转为int类型数组
+Y_train = np.asarray(train_df[0], dtype=int)
+
+x_train, x_test, y_train, y_test = train_test_split(X_train, Y_train, test_size=0.1)
+# nb接收朴素贝叶斯方法
+# clf = MultinomialNB(alpha=0.1)
+# KNN(K-邻近算法)
+clf = KNeighborsClassifier(n_neighbors=6, n_jobs=1)
+# 训练，传入训练的特征sparss矩阵，训练的目标值
+clf.fit(x_train, y_train)
+y_pre = clf.predict(x_test)
+score_f1 = f1_score(y_test, y_pre, average='macro')
+print(score_f1)
+# 预测，输入预测所需的特征值x,写入csv
+result = clf.predict(tests)
+print(result)
+f = open('test_a submit.csv', 'w', encoding='utf-8', newline='')
+csv_writer = csv.writer(f)
+csv_writer.writerow(['label'])
+for a in result:
+    csv_writer.writerow([a])
+f.close()
