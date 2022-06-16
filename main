@@ -8,11 +8,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
-# C:/Users/联想/Desktop/train_set.csv
-train_df = pd.read_csv('./input/train.csv', sep='\t')
+
+train_df = pd.read_csv('train.csv', sep='\t')
 train_df = np.transpose(train_df.values)
 # print(train_df)
-test_df = pd.read_csv('./input/test.csv', sep='\t')
+test_df = pd.read_csv('test.csv', sep='\t')
 test_df = np.transpose(test_df.values)
 # print(test_df)
 # # 变量vect接收特征向量化方法
